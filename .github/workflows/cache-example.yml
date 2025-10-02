@@ -1,0 +1,36 @@
+name: Cache Example Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # allows manual triggering
+
+jobs:
+  cache-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (example dependency)
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Prime cache-fa22da5
+        id: cache-step
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: cache-fa22da5
+        # The action automatically restores or creates the cache
+
+      - name: Echo cache result
+        run: |
+          if [ -d ~/.npm ]; then
+            echo "Cache hit or created successfully!"
+          else
+            echo "Cache miss!"
+          fi
